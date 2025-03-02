@@ -9,6 +9,7 @@ This is a **Fullstack React Application** designed as an **assessment project** 
 ✅ **React with Vite for fast development**  
 ✅ **Dockerized for consistent deployments**  
 ✅ **Deployed on Docker Swarm for scalability**  
+✅ **IAC using terraform scripts to provision infrastructure**
 ✅ **Auto CI/CD via GitHub Actions + AWS ECR**  
 ✅ **Zero-downtime updates using Swarm rolling updates**  
 ✅ **Nginx for serving production builds**  
@@ -147,5 +148,3 @@ docker service ps react-stack_react-app
 
 ## **💡 Conclusion**
 This project is a **full-stack React assessment** focusing on **React, Docker, AWS, and CI/CD best practices**. It provides hands-on **real-world deployment experience** and tests the interviewee's ability to work with **cloud-based, containerized applications**.
-
-🚀 **Good luck with the assessment!** Let me know if you need additional **guidance or refinements.** 🎯🔥
