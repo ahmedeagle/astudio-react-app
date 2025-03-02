@@ -9,6 +9,7 @@ This is a **Fullstack React Application** designed as an **assessment project** 
 ✅ **React with Vite for fast development**  
 ✅ **Dockerized for consistent deployments**  
 ✅ **Deployed on Docker Swarm for scalability**  
+✅ **IAC using terraform scripts to provision infrastructure** 
 ✅ **Auto CI/CD via GitHub Actions + AWS ECR**  
 ✅ **Zero-downtime updates using Swarm rolling updates**  
 ✅ **Nginx for serving production builds**  
