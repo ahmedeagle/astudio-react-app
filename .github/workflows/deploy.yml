@@ -3,7 +3,7 @@ name: Deploy React App to AWS ECR + Docker Swarm
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build-and-deploy:
