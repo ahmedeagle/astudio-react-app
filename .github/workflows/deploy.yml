@@ -41,7 +41,7 @@ jobs:
           tags: |
             043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:${{ env.IMAGE_TAG }}
 
-      # 🔹 Deploy to Docker Swarm
+      # 🔹Deploy to Docker Swarm
       - name: Deploy to Docker Swarm
         uses: appleboy/ssh-action@v1.0.3
         with:
