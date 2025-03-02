@@ -14,6 +14,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # 🔹 Generate Unique Image Tag (Git Commit Hash)
+      - name: Set Image Tag
+        run: echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       # 🔹 Configure AWS Credentials
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -27,14 +31,16 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # 🔹 Build and Push Docker Image to AWS ECR
+      # 🔹 Build and Push Docker Image to AWS ECR (With Unique Tag)
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: Dockerfile
           push: true
-          tags: 043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:latest
+          tags: |
+            043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:${{ env.IMAGE_TAG }}
+            043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:latest
 
       # 🔹 Deploy to Docker Swarm
       - name: Deploy to Docker Swarm
@@ -45,5 +51,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 043309367638.dkr.ecr.us-east-1.amazonaws.com
-            docker pull 043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:latest
-            docker service update --image 043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:latest react-stack_react-app
+            IMAGE_TAG=$(aws ecr describe-images --repository-name astudio-react-app --region us-east-1 --query 'sort_by(imageDetails,&imagePushedAt)[-1].imageTags[0]' --output text)
+            docker pull 043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:$IMAGE_TAG
+            docker service update --image 043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:$IMAGE_TAG react-stack_react-app
