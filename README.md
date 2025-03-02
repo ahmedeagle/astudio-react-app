@@ -147,5 +147,3 @@ docker service ps react-stack_react-app
 
 ## **💡 Conclusion**
 This project is a **full-stack React assessment** focusing on **React, Docker, AWS, and CI/CD best practices**. It provides hands-on **real-world deployment experience** and tests the interviewee's ability to work with **cloud-based, containerized applications**.
-
-🚀 **Good luck with the assessment!** Let me know if you need additional **guidance or refinements.** 🎯🔥
