@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  react-app:
+    image: my-react-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      replicas: 2  # Two instances for load balancing
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1  # Update one instance at a time
+        delay: 5s  # Wait 5 seconds before updating the next instance
+        order: start-first  # New container starts before the old one stops
+    ports:
+      - "8080:80"
+    networks:
+      - react-network
+
+networks:
+  react-network:
+    driver: overlay
