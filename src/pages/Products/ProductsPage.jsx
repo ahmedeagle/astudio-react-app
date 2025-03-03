@@ -1,145 +1,84 @@
-
-import { useAppContext } from "../../context/AppContext";
+import { useEffect, useState } from "react";
+import { fetchProducts } from "../../services/api";
 import Table from "../../components/Table";
-import { useState } from "react";
+import Breadcrumb from "../../components/Breadcrumb";
 
 const ProductsPage = () => {
-  const { products, filters, setFilters } = useAppContext();
-  const [selectedCategory, setSelectedCategory] = useState("ALL");
-  const [showSearch, setShowSearch] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [category, setCategory] = useState("all");
+  const [pageSize, setPageSize] = useState(5);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
-  const handleSearchChange = (e) => {
-    setFilters((prev) => ({ ...prev, search: e.target.value }));
+  useEffect(() => {
+    loadProducts();
+  }, [category, pageSize, page]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [searchTerm, products]);
+
+  const loadProducts = async () => {
+    setLoading(true);
+    const data = await fetchProducts(pageSize, (page - 1) * pageSize, category !== "all" ? category : "");
+    setProducts(data.products || []);
+    setLoading(false);
   };
 
-  const handlePageSizeChange = (e) => {
-    setFilters((prev) => ({ ...prev, pageSize: Number(e.target.value), page: 1 }));
-  };
+  const applyFilters = () => {
+    let filtered = products;
 
-  const handleFilterChange = (field, value) => {
-    setFilters({ [field]: value, page: 1, search: "" }); // Reset other filters when one is applied
-  };
+    if (searchTerm) {
+      filtered = filtered.filter((product) =>
+        product.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
 
-  const handlePageChange = (direction) => {
-    setFilters((prev) => ({
-      ...prev,
-      page: Math.max(1, prev.page + direction),
-    }));
+    setFilteredProducts(filtered);
   };
-
-  // Category Tabs Handler
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setFilters({ category: category === "ALL" ? "" : category, page: 1, search: "" });
-  };
-
-  const columns = [
-    { header: "ID", accessor: "id" },
-    { header: "Title", accessor: "title" },
-    { header: "Brand", accessor: "brand" },
-    { header: "Category", accessor: "category" },
-    { header: "Price", accessor: "price" },
-    { header: "Stock", accessor: "stock" },
-    { header: "Rating", accessor: "rating" },
-    { header: "Description", accessor: "description" },
-    { header: "Discount", accessor: "discountPercentage" },
-    { header: "Thumbnail", accessor: "thumbnail" },
-  ];
 
   return (
-    <div className="container mx-auto p-6 bg-grey min-h-screen font-neutra">
-      <h1 className="text-3xl font-bold mb-6 text-black">Products</h1>
-
-      {/* Category Tabs */}
-      <div className="flex space-x-4 mb-4">
-        <button
-          onClick={() => handleCategoryChange("ALL")}
-          className={`px-6 py-2 rounded-md font-semibold ${selectedCategory === "ALL" ? "bg-blue text-white" : "bg-gray-300 hover:bg-gray-400"}`}
-        >
-          ALL
-        </button>
-        <button
-          onClick={() => handleCategoryChange("laptops")}
-          className={`px-6 py-2 rounded-md font-semibold ${selectedCategory === "laptops" ? "bg-blue text-white" : "bg-gray-300 hover:bg-gray-400"}`}
-        >
-          Laptops
-        </button>
-      </div>
-
-      {/* Filters Section */}
-      <div className="flex justify-between mb-4">
-        {/* Search Icon & Input */}
-        <div className="flex items-center space-x-2">
-          <button onClick={() => setShowSearch(!showSearch)} className="bg-yellow p-2 rounded-full">
-            🔍
-          </button>
-          {showSearch && (
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue"
-              value={filters.search}
-              onChange={handleSearchChange}
-            />
-          )}
-        </div>
-
-        {/* Page Size Dropdown */}
-        <select
-          value={filters.pageSize}
-          onChange={handlePageSizeChange}
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue"
-        >
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
-        </select>
-      </div>
+    <div className="container mx-auto p-6 bg-white rounded-lg shadow-md">
+      <Breadcrumb />
+      <h2>Products List</h2>
 
       {/* Filters */}
       <div className="flex space-x-4 mb-4">
+        <select onChange={(e) => setCategory(e.target.value)} value={category} className="border p-2 rounded">
+          <option value="all">All</option>
+          <option value="laptops">Laptops</option>
+          <option value="smartphones">Smartphones</option>
+        </select>
+
         <input
           type="text"
-          placeholder="Filter by Title"
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue"
-          onChange={(e) => handleFilterChange("title", e.target.value)}
+          placeholder="Search by Title..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border p-2 rounded"
         />
-        <input
-          type="text"
-          placeholder="Filter by Brand"
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue"
-          onChange={(e) => handleFilterChange("brand", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Filter by Category"
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue"
-          onChange={(e) => handleFilterChange("category", e.target.value)}
-        />
+
+        <select onChange={(e) => setPageSize(e.target.value)} value={pageSize} className="border p-2 rounded">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+        </select>
       </div>
 
-      {/* Table */}
-      <Table data={products} columns={columns} />
-
-      {/* Pagination */}
-      <div className="flex justify-between mt-6">
-        <button
-          onClick={() => handlePageChange(-1)}
-          className={`px-6 py-2 rounded-md font-semibold border ${filters.page === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-blue text-white hover:bg-blue-700"}`}
-          disabled={filters.page === 1}
-        >
-          Previous
-        </button>
-        <span className="text-gray-700 font-semibold">Page {filters.page}</span>
-        <button
-          onClick={() => handlePageChange(1)}
-          className={`px-6 py-2 rounded-md font-semibold border ${products.length < filters.pageSize ? "bg-gray-300 cursor-not-allowed" : "bg-blue text-white hover:bg-blue-700"}`}
-          disabled={products.length < filters.pageSize}
-        >
-          Next
-        </button>
-      </div>
+      {loading ? (
+        <p className="text-center text-gray-500">Loading...</p>
+      ) : (
+        <Table
+          data={filteredProducts}
+          columns={[
+            { accessor: "title", header: "Title" },
+            { accessor: "brand", header: "Brand" },
+            { accessor: "category", header: "Category" },
+          ]}
+        />
+      )}
     </div>
   );
 };

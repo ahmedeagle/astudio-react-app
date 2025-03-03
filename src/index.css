@@ -1,3 +1,83 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Global Styles */
+body {
+    font-family: "Neutra Text", sans-serif;
+    background-color: #ebebeb;
+    color: #322625;
+  }
+  
+  /* Headings */
+  h2 {
+    color: #322625;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* Inputs & Select Dropdowns */
+  input, select {
+    padding: 8px;
+    margin: 10px;
+    border-radius: 5px;
+    border: 1px solid #c0e3e5;
+    background-color: white;
+    color: #322625;
+  }
+  
+  /* Buttons */
+  button {
+    padding: 8px 12px;
+    margin: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: #fdc936;
+    color: #322625;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  button:hover {
+    background-color: #c0e3e5;
+  }
+  
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+  }
+  
+  th {
+    background-color: #fdc936;
+    color: #322625;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #c0e3e5;
+  }
+  
+  tr:hover {
+    background-color: #c0e3e5;
+  }
+  
+  /* Breadcrumb Navigation */
+  .breadcrumb {
+    background-color: #c0e3e5;
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+  
+  .breadcrumb a {
+    color: #322625;
+    text-decoration: none;
+  }
+  
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  
