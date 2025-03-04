@@ -52,4 +52,12 @@ jobs:
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 043309367638.dkr.ecr.us-east-1.amazonaws.com
             IMAGE_TAG=$(aws ecr describe-images --repository-name astudio-react-app --region us-east-1 --query 'sort_by(imageDetails,&imagePushedAt)[-1].imageTags[0]' --output text)
             docker pull 043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:$IMAGE_TAG
-            docker service update --image 043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:$IMAGE_TAG react-stack_react-app
+            # Check if the service exists
+            if docker service ls | grep -q react-stack_react-app; then
+                echo "Service exists, updating..."
+                docker service update --image 043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:$IMAGE_TAG react-stack_react-app
+            else
+                echo "Service does not exist, creating a new one..."
+                docker network create --driver overlay react-network || true
+                docker service create --name react-stack_react-app --network react-network -p 8080:80 043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:$IMAGE_TAG
+            fi
