@@ -18,6 +18,13 @@ services:
       - "8080:80"
     networks:
       - app-network
+    volumes:
+      - react-env-volume:/app/.env  # Mount .env file from volume
+
+volumes:
+  react-env-volume:
+    external: true  # Use pre-created volume
+
 networks:
   app-network:
-    driver: overlay
+    driver: overlay  # Changed to overlay for Swarm
