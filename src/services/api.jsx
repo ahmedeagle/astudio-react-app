@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Load API base URL from environment variables
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://laravel-app:8000/api";
 const PRODUCTS_API = "https://dummyjson.com/products";
 
 // Retrieve token from local storage
