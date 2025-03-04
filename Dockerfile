@@ -4,7 +4,7 @@ FROM node:18-alpine AS build
 # Set working directory
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy package.json and install dependencies
 COPY package.json package-lock.json ./
 RUN npm install --frozen-lockfile
 
@@ -14,10 +14,7 @@ COPY . .
 # Build the React app
 RUN npm run build
 
-# Debug: Check if `dist/` exists before copying
-RUN ls -lah /app/dist && du -sh /app/dist
-
-# Production stage: Use Nginx to serve the built files
+# Production stage: Use Nginx
 FROM nginx:alpine
 
 # Set working directory in Nginx container
@@ -26,13 +23,13 @@ WORKDIR /usr/share/nginx/html
 # Remove default Nginx index.html (to prevent conflicts)
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy built files from `build` stage
+# Copy built React files to Nginx html directory
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Debug: Check if files exist after copying
-RUN ls -lah /usr/share/nginx/html && du -sh /usr/share/nginx/html
+# Copy the custom Nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80 for Nginx
+# Expose port 80
 EXPOSE 80
 
 # Start Nginx
