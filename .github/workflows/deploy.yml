@@ -41,7 +41,6 @@ jobs:
           no-cache: true  # Ensures a fresh build
           tags: |
             043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:${{ env.IMAGE_TAG }}
-            043309367638.dkr.ecr.us-east-1.amazonaws.com/astudio-react-app:latest
 
       # 🔹 Verify the Image Exists in ECR
       - name: Verify Pushed Image in ECR
