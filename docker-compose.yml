@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     deploy:
-      replicas: 2  # Two instances for load balancing
+      replicas: 1  # Two instances for load balancing
       restart_policy:
         condition: on-failure
       update_config:
