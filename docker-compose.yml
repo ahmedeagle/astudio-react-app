@@ -17,7 +17,7 @@ services:
     ports:
       - "8080:80"
     networks:
-      - react-network
+      - app-network
 networks:
-  react-network:
+  app-network:
     driver: overlay
